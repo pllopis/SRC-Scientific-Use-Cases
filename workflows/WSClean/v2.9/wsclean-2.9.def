@@ -1,0 +1,55 @@
+Bootstrap: docker
+From: debian:bullseye
+Stage: build
+
+
+%environment
+  # Set system locale
+    export LC_ALL=C
+    export IDGAPI_DIR=/usr/local/idg
+    export LD_LIBRARY_PATH="/usr/local/lib:/usr/lib/x86_64-linux-gnu/hdf5/serial:/usr/local/idg/lib"
+
+%post
+  # Set system locale for now
+    export LC_ALL=C
+    export IDGAPI_DIR=/usr/local/idg
+    export LD_LIBRARY_PATH="/usr/local/lib:/usr/lib/x86_64-linux-gnu/hdf5/serial:/usr/local/idg/lib"
+
+ # add contrib and non-file sources
+    awk '{print $0, "contrib non-free"}' /etc/apt/sources.list > sources.list
+    mv sources.list /etc/apt/sources.list
+
+    apt update -y
+
+    apt install -y wget gcc libxml2 curl gpg-agent build-essential
+    apt-get install -y wget apt-utils apt-transport-https git vim
+
+    apt-get install -y casacore-dev libgsl-dev libhdf5-dev libfftw3-dev
+    apt-get install -y libboost-dev libboost-date-time-dev
+    apt-get install -y libboost-filesystem-dev libboost-program-options-dev
+    apt-get install -y libboost-system-dev libboost-thread-dev
+    apt-get install -y libcfitsio-dev cmake g++ libblas-dev liblapack-dev
+    apt-get install -y libopenmpi-dev doxygen
+
+  # Add the cuda stuff
+    apt-get install -y nvidia-detect
+    apt-get install -y nvidia-cuda-toolkit
+
+  # Grab and compile the IDG code
+    git clone https://gitlab.com/astron-idg/idg.git
+    cd idg && mkdir build && cd build
+    cmake -DCMAKE_INSTALL_PREFIX=/usr/local/idg/ ..
+    cmake -DBUILD_LIB_CUDA=ON .
+    make
+    make install
+
+  # Grab the 2.9 version of wsclean code
+    cd
+    git clone --branch wsclean2.9 https://git.code.sf.net/p/wsclean/code wsclean-code
+    cd wsclean-code/wsclean
+    mkdir -p build
+    cd build
+    cmake -DPORTABLE=Yes -DIDGAPI_DIR=/usr/local/idg ..
+    make
+    make install
+
