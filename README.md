@@ -1,3 +1,8 @@
+
+- [SRC Scientific Use Cases](#src-scientific-use-cases)
+- [Directory structure](#directory-structure)
+- [Adding a new applications or workflow](#adding-a-new-applications-or-workflow)
+
 ## SRC Scientific Use Cases
 
 The goal of this repository is to collect scientific use cases (e.g. applications, kernels, benchmarks, workflows) that will be expected to run on SRCs.
