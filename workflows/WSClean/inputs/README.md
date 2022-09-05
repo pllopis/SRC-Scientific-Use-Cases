@@ -1,6 +1,4 @@
 # Inputs
 
-## SuperClass DR1 Calibrated UVdata
-
-For the input dataset the unaveraged measurement set generated is available 1027+6812.ms (32GB) in order to make a field field image.
-TODO: Ask Bob about the source
+The TS8004_C_001_20190801 MS file can be obtained from:
+https://www.e-merlin.ac.uk/distribute/CY8/TS8004/TS8004_C_001_20190801/weblog/download.html
