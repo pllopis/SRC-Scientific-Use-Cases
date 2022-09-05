@@ -1,0 +1,67 @@
+Bootstrap: docker
+From: ubuntu:20.04
+Stage: spython-base
+
+%files
+# After cloning the wsclean repo, checkout the desired version.
+# For instance, for v3.1: git switch -b v3.1 tags/v3.1
+# May need to remove broken symlinks for it to build:
+# rm doc/source/_static doc/source/ds9-facet-file.rst
+. /src
+%post
+
+export DEBIAN_FRONTEND=noninteractive && apt-get update && \
+apt-get install -y \
+git \
+cmake \
+build-essential \
+g++ \
+pkg-config \
+casacore-data casacore-dev \
+libblas-dev liblapack-dev \
+python3 \
+libpython3-dev \
+libboost-date-time-dev libboost-test-dev \
+libboost-program-options-dev libboost-system-dev libboost-filesystem-dev \
+libcfitsio-dev \
+libfftw3-dev \
+libgsl-dev \
+libhdf5-dev \
+libopenmpi-dev \
+libpng-dev \
+pkg-config \
+python3-dev python3-numpy \
+python3-pytest \
+python3-sphinx \
+wget
+
+# Install EveryBeam
+mkdir /external && cd /external && git clone https://git.astron.nl/RD/EveryBeam.git && \
+mkdir /external/EveryBeam/build && cd /external/EveryBeam/build && cmake ../ && make install -j`nproc`
+
+# Install Dysco
+cd /external && git clone https://github.com/aroffringa/dysco.git && \
+mkdir /external/dysco/build && cd /external/dysco/build && cmake ../ && make install -j`nproc`
+
+# Install IDG
+cd /external && git clone https://git.astron.nl/RD/idg.git && \
+mkdir /external/idg/build && cd /external/idg/build && cmake ../ && make install -j`nproc`
+
+# WSClean
+cd /src
+
+# Point to the casacore where Dysco is installed
+LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/lib"
+
+mkdir /build && \
+cd /build && \
+cmake ../src && \
+make -j`nproc` && \
+make install && \
+wsclean --version
+
+%environment
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/local/lib"
+
+%runscript
+exec wsclean "$@"
