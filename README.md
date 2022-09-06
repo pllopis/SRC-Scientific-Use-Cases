@@ -5,7 +5,7 @@
 
 ## SRC Scientific Use Cases
 
-The goal of this repository is to collect scientific use cases (e.g. applications, kernels, benchmarks, workflows) that will be expected to run on SRCs.
+The goal of this repository is to collect scientific use cases (e.g. applications, kernels, benchmarks, workflows) that will be expected to run on SKA Regional Centers (SRC).
 Each of these cases should contain the necessary information to be reproduced. Along with each case, profiling results such as profiling data and profiling analysis reports are stored as well.
 
 Each case should consist of the following information:
